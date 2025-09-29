@@ -91,7 +91,7 @@ pipeline {
                         kubectl apply -f k8s/service.yaml
 
                         # Optional: verify rollout
-                        kubectl rollout status deployment/starbucks-deployment
+                        kubectl rollout status deployment/starbucks-app
                     '''
                 }
             }
