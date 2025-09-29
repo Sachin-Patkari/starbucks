@@ -13,9 +13,9 @@ pipeline {
                 cleanWs()
             }
         }
-        stage ("Git Checkout") {
+        stage ("Checkout") {
             steps {
-                git branch: 'main', url: 'https://github.com/Sachin-Patkari/starbucks.git'
+                checkout scm
             }
         }
         stage("SonarQube Analysis"){
