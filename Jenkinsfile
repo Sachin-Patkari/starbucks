@@ -81,7 +81,7 @@ pipeline {
         }
         stage('Deploy to EKS') {
             steps {
-                withAWS(region: 'ap-south-1', credentials: 'aws-creds') {
+                withAWS(region: 'ap-south-1', credentials: 'aws-cred') {
                     sh '''
                         # Update kubeconfig to talk to your EKS cluster
                         /usr/local/bin/aws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
