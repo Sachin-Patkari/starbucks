@@ -13,13 +13,13 @@ pipeline {
                 cleanWs()
             }
         }
-        stage ("Checkout") {
+        stage ("Git Checkout") {
             steps {
-                checkout scm
+                git branch: 'main', url: 'https://github.com/Sachin-Patkari/starbucks.git'
             }
         }
-        stage("SonarQube Analysis"){
-            steps{
+        stage("SonarQube Analysis") {
+            steps {
                 withSonarQubeEnv('sonar-server') {
                     sh '''
                         $SCANNER_HOME/bin/sonar-scanner \
@@ -29,7 +29,7 @@ pipeline {
                 }
             }
         }
-        stage("Quality Gate"){
+        stage("Quality Gate") {
             steps {
                 script {
                     waitForQualityGate abortPipeline: true, credentialsId: 'Sonar-token' 
@@ -61,7 +61,7 @@ pipeline {
         stage('Docker Scout Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
+                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
                         sh 'docker-scout quickview sachinpatkari/starbucks:latest'
                         sh 'docker-scout cves sachinpatkari/starbucks:latest'
                         sh 'docker-scout recommendations sachinpatkari/starbucks:latest'
@@ -79,19 +79,19 @@ pipeline {
                 }
             }
         }
-        stage ("Deploy to EKS") {
+        stage('Deploy to EKS') {
             steps {
-                withAWS(region: 'ap-south-1', credentials: 'aws-cred') {
+                withAWS(region: 'ap-south-1', credentials: 'aws-creds') {
                     sh '''
-                        # Configure kubeconfig for EKS
-                        aws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
-                        
-                        # Update image in deployment (rolling update)
-                        kubectl set image deployment/starbucks-app starbucks=sachinpatkari/starbucks:${BUILD_NUMBER} -n default || true
-                        
-                        # If deployment does not exist, apply manifests
+                        # Update kubeconfig to talk to your EKS cluster
+                        /usr/local/bin/aws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
+
+                        # Apply Kubernetes manifests
                         kubectl apply -f k8s/deployment.yaml
                         kubectl apply -f k8s/service.yaml
+
+                        # Optional: verify rollout
+                        kubectl rollout status deployment/starbucks-deployment
                     '''
                 }
             }
