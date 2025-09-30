@@ -1,7 +1,6 @@
 ![Starbucks Clone Deployment](https://github.com/user-attachments/assets/6b654f47-9537-4b88-9584-41c760fc49ac)
 
 # Deploy Starbucks Clone Application AWS using DevSecOps Approach
-https://app.eraser.io/workspace/59NJfCay26dUMl5YAlFl?origin=share
 
 # **Install AWS CLI**
 ```
@@ -53,7 +52,6 @@ sudo systemctl status docker
 
 # **Install Trivy on Ubuntu:**
 
-Reference Doc: https://aquasecurity.github.io/trivy/v0.55/getting-started/installation/
 ```
 sudo apt-get install wget apt-transport-https gnupg
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
@@ -70,8 +68,6 @@ docker login       `Give Dockerhub credentials here`
 ```
 curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s -- -b /usr/local/bin
 ```
-# Deployment Stages:
-<img width="966" alt="Screenshot 2024-09-15 at 7 20 49 AM" src="https://github.com/user-attachments/assets/ddb5e618-79ab-49b3-8f13-b5114824eec3">
 
 
 # Jenkins Complete pipeline
