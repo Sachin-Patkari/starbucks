@@ -68,7 +68,7 @@ export const BaristaRecommends = [
     {
         id: "2",
         img: bhuna,
-        title: "my favorite Bhuna Chicken ",
+        title: "my favorite Bhuna Chickenn ",
         type:nonveg,
         gram: "85",
         kcal: "390",
