@@ -68,7 +68,7 @@ export const BaristaRecommends = [
     {
         id: "2",
         img: bhuna,
-        title: "Bhuna Chicken Puff ",
+        title: "my favorite Bhuna Chicken ",
         type:nonveg,
         gram: "85",
         kcal: "390",
