@@ -13,11 +13,13 @@ pipeline {
                 cleanWs()
             }
         }
+
         stage ("Git Checkout") {
             steps {
                 git branch: 'main', url: 'https://github.com/Sachin-Patkari/starbucks.git'
             }
         }
+
         stage("SonarQube Analysis") {
             steps {
                 withSonarQubeEnv('sonar-server') {
@@ -29,35 +31,41 @@ pipeline {
                 }
             }
         }
+
         stage("Quality Gate") {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: true, credentialsId: 'Sonar-token' 
+                    waitForQualityGate abortPipeline: true, credentialsId: 'Sonar-token'
                 }
             } 
         }
+
         stage("Install NPM Dependencies") {
             steps {
                 sh "npm install"
             }
         }
+
         stage('OWASP Dependency Check') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
+
         stage ("Trivy File Scan") {
             steps {
                 sh "trivy fs . > trivy.txt"
             }
         }
+
         stage ("Build Docker Image") {
             steps {
                 sh "docker build -t sachinpatkari/starbucks:${BUILD_NUMBER} ."
                 sh "docker tag sachinpatkari/starbucks:${BUILD_NUMBER} sachinpatkari/starbucks:latest"
             }
         }
+
         stage('Docker Scout Image') {
             steps {
                 script {
@@ -69,6 +77,7 @@ pipeline {
                 }
             }
         }
+
         stage ("Push to DockerHub") {
             steps {
                 script {
@@ -108,14 +117,16 @@ EOF
             steps {
                 withAWS(region: 'ap-south-1', credentials: 'aws-cred') {
                     sh '''
-                        # Update kubeconfig to talk to your EKS cluster
                         /usr/local/bin/aws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
 
-                        # Apply Kubernetes manifests
-                        kubectl apply -f k8s/deployment.yaml
+                        # Replace IMAGE_PLACEHOLDER with actual tag
+                        sed "s|IMAGE_PLACEHOLDER|sachinpatkari/starbucks:${BUILD_NUMBER}|g" k8s/deployment.yaml > k8s/deployment-final.yaml
+
+                        # Apply updated manifests
+                        kubectl apply -f k8s/deployment-final.yaml
                         kubectl apply -f k8s/service.yaml
 
-                        # Optional: verify rollout
+                        # Verify rollout
                         kubectl rollout status deployment/starbucks-app
                     '''
                 }

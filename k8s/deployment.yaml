@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: starbucks
-          image: sachinpatkari/starbucks:latest
+          image: IMAGE_PLACEHOLDER
           ports:
             - containerPort: 3000
