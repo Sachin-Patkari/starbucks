@@ -79,6 +79,27 @@ pipeline {
                 }
             }
         }
+        stage('Apply aws-auth') {
+            steps {
+                withAWS(region: 'ap-south-1', credentials: 'aws-cred') {
+                    sh '''
+                    cat <<EOF | kubectl apply -f -
+                    apiVersion: v1
+                    kind: ConfigMap
+                    metadata:
+                      name: aws-auth
+                      namespace: kube-system
+                    data:
+                      mapUsers: |
+                        - userarn: arn:aws:iam::422228629182:user/jenkins-user
+                          username: jenkins
+                          groups:
+                            - system:masters
+                    EOF
+                    '''
+                }
+            }
+        }
         stage('Deploy to EKS') {
             steps {
                 withAWS(region: 'ap-south-1', credentials: 'aws-cred') {
