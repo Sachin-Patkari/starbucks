@@ -7,7 +7,7 @@ flowchart TD
     C --> F[Docker Build + DockerHub Push]
     F --> G[Kubernetes Deployment on EKS]
     G --> H[LoadBalancer Service]
-    H --> I[Starbucks App ☕]
+    H --> I[Starbucks App ]
 
 
 # ☕ Starbucks DevSecOps Project
@@ -75,9 +75,6 @@ starbucks/
 ├── Jenkinsfile
 └── src/ (app code, e.g., index.js, package.json)
 
-yaml
-Copy code
-
 ---
 
 ## ⚡ Setup Instructions
@@ -87,9 +84,9 @@ Copy code
 cd infra/
 terraform init
 terraform apply -auto-approve
+```
 2️⃣ Configure Jenkins Server
-bash
-Copy code
+
 cd ansible/
 ansible-playbook -i inventory.ini playbook.yml
 3️⃣ Run Jenkins Pipeline
@@ -100,8 +97,6 @@ Use project Jenkinsfile
 Trigger build manually or via GitHub webhook
 
 4️⃣ Verify Deployment
-bash
-Copy code
 kubectl get pods
 kubectl get svc
 Copy EXTERNAL-IP of starbucks-service
@@ -111,8 +106,7 @@ Open in browser → App is live 🎉
 🧹 Teardown (Avoid AWS Costs)
 When done, destroy resources:
 
-bash
-Copy code
+
 cd infra/
 terraform destroy -auto-approve
 Also manually check & delete:
