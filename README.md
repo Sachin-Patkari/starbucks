@@ -1,13 +1,49 @@
-```mermaid
-flowchart TD
-    A[Developer Push] --> B[GitHub Repo]
-    B --> C[Jenkins Pipeline]
-    C --> D[SonarQube Analysis]
-    C --> E[Trivy + OWASP Scan]
-    C --> F[Docker Build + DockerHub Push]
-    F --> G[Kubernetes Deployment on EKS]
-    G --> H[LoadBalancer Service]
-    H --> I[Starbucks App ]
+           ┌───────────────┐
+           │   Developer   │
+           │ (git push)    │
+           └──────┬────────┘
+                  │
+                  ▼
+         ┌───────────────────┐
+         │     GitHub Repo   │
+         └────────┬──────────┘
+                  │ Webhook
+                  ▼
+         ┌───────────────────┐
+         │     Jenkins EC2   │
+         │  (Pipeline runs)  │
+         └────────┬──────────┘
+                  │
+      ┌───────────┼──────────────────────────┐
+      ▼           ▼                          ▼
+┌────────────┐ ┌──────────────┐        ┌───────────────┐
+│ SonarQube  │ │ Trivy / OWASP│        │ Docker Scout  │
+│  Analysis  │ │ Security Scan│        │ Image Scanning│
+└────────────┘ └──────────────┘        └───────────────┘
+                  │
+                  ▼
+          ┌─────────────────┐
+          │   Docker Build  │
+          │  + Push to Hub  │
+          └────────┬────────┘
+                   │
+                   ▼
+          ┌─────────────────┐
+          │   AWS EKS       │
+          │ (Kubernetes)    │
+          └────────┬────────┘
+                   │
+                   ▼
+          ┌─────────────────┐
+          │  LoadBalancer   │
+          │ (Service.yaml)  │
+          └────────┬────────┘
+                   │
+                   ▼
+          ┌─────────────────┐
+          │ Starbucks App ☕ │
+          └─────────────────┘
+
 
 
 # ☕ Starbucks DevSecOps Project
