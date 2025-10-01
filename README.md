@@ -14,7 +14,7 @@ Ansible installs:
 Jenkins
 Docker
 Trivy
-SonarQube 
+SonarQube (if required)
 
 2. CI/CD Pipeline (Jenkinsfile)
 The automated pipeline performs the following steps:
@@ -128,6 +128,3 @@ Configure these in Jenkins:
 DOCKERHUB_CREDENTIALS - Docker Hub username and password
 SONAR_TOKEN - SonarQube authentication token
 AWS_CREDENTIALS - AWS access keys for EKS deployment
-
-👨‍💻 Author
-Sachin Patkari
