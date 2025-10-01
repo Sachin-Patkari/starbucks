@@ -1,184 +1,133 @@
-![Starbucks Clone Deployment](https://github.com/user-attachments/assets/6b654f47-9537-4b88-9584-41c760fc49ac)
+☕ Starbucks DevSecOps Project
+This project is a fully automated CI/CD pipeline that builds, scans, packages, and deploys a Starbucks clone application to AWS EKS using Jenkins, Docker, Kubernetes, SonarQube, Trivy, OWASP, Docker Scout, Ansible, and Terraform.
 
-# Deploy Starbucks Clone Application AWS using DevSecOps Approach
+🚀 Project Flow
+1. Infrastructure Setup (Terraform + Ansible)
+Terraform provisions:
 
-# **Install AWS CLI**
-```
-sudo apt install unzip -y
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-```
- 
-# **Install Jenkins on Ubuntu:**
+VPC, Subnets, Internet Gateway
+EKS Cluster & Worker Nodes
+Jenkins EC2 instance
 
-```
-#!/bin/bash
-sudo apt update -y
-wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo tee /etc/apt/keyrings/adoptium.asc
-echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
-sudo apt update -y
-sudo apt install temurin-17-jdk -y
-/usr/bin/java --version
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt-get update -y
-sudo apt-get install jenkins -y
-sudo systemctl start jenkins
-sudo systemctl status jenkins
-```
+Ansible installs:
 
+Jenkins
+Docker
+Trivy
+SonarQube 
 
-# **Install Docker on Ubuntu:**
-```
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-sudo usermod -aG docker ubuntu
-sudo chmod 777 /var/run/docker.sock
-newgrp docker
-sudo systemctl status docker
-```
+2. CI/CD Pipeline (Jenkinsfile)
+The automated pipeline performs the following steps:
 
-# **Install Trivy on Ubuntu:**
+Cleans workspace
+Clones source code from GitHub
+Runs SonarQube static code analysis
+Waits for Sonar Quality Gate
+Installs npm dependencies
+Runs OWASP Dependency Check
+Runs Trivy File System Scan
+Builds Docker image of the app
+Runs Docker Scout (quickview, CVEs, recommendations)
+Pushes Docker image to DockerHub
+Updates Kubernetes manifests (deployment.yaml & service.yaml) with new image tag
+Deploys to AWS EKS
+Verifies rollout
 
-```
-sudo apt-get install wget apt-transport-https gnupg
-wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
-echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
-sudo apt-get update
-sudo apt-get install trivy
-```
+3. Kubernetes Deployment
+
+deployment.yaml → Deploys app containers
+service.yaml → Exposes app using AWS LoadBalancer
 
 
-# **Install Docker Scout:**
-```
-docker login       `Give Dockerhub credentials here`
-```
-```
-curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s -- -b /usr/local/bin
-```
+🛠 Tools & Technologies
+CategoryToolsInfrastructureTerraform, Ansible, AWS (EC2, VPC, EKS, IAM, ELB)CI/CDJenkinsCode AnalysisSonarQubeSecurity ScanningTrivy, OWASP Dependency-Check, Docker ScoutContainerizationDocker, DockerHubOrchestrationKubernetes (EKS)
+
+📂 Project Structure
+starbucks/
+├── ansible/
+│   ├── inventory.ini
+│   └── playbook.yml
+├── infra/
+│   └── main.tf
+├── k8s/
+│   ├── deployment.yaml
+│   └── service.yaml
+├── Jenkinsfile
+└── src/
+    ├── index.js
+    ├── package.json
+    └── (other app files)
+
+⚡ Setup Instructions
+1️⃣ Provision Infrastructure
+bashcd infra/
+terraform init
+terraform apply -auto-approve
+2️⃣ Configure Jenkins Server
+bashcd ansible/
+ansible-playbook -i inventory.ini playbook.yml
+3️⃣ Run Jenkins Pipeline
+
+Access Jenkins UI
+Create a new Pipeline job
+Point to your project's Jenkinsfile
+Trigger build manually or configure GitHub webhook
+
+4️⃣ Verify Deployment
+bashkubectl get pods
+kubectl get svc
+Copy the EXTERNAL-IP of starbucks-service and open it in your browser. Your app is now live! 🎉
+
+🧹 Teardown (Avoid AWS Costs)
+When you're done testing, destroy all resources:
+bashcd infra/
+terraform destroy -auto-approve
+Also manually check and delete:
+
+Load Balancers (ELB/ALB)
+NAT Gateways
+Elastic IPs
+Orphaned ENIs (Elastic Network Interfaces)
 
 
-# Jenkins Complete pipeline
-```
-pipeline {
-    agent any
-    tools {
-        jdk 'jdk17'
-        nodejs 'node16'
-    }
-    environment {
-        SCANNER_HOME=tool 'sonar-scanner'
-    }
-    stages {
-        stage ("clean workspace") {
-            steps {
-                cleanWs()
-            }
-        }
-        stage ("Git checkout") {
-            steps {
-                git branch: 'main', url: 'https://github.com/yeshwanthlm/starbucks.git'
-            }
-        }
-        stage("Sonarqube Analysis "){
-            steps{
-                withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=starbucks \
-                    -Dsonar.projectKey=starbucks '''
-                }
-            }
-        }
-        stage("quality gate"){
-           steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
-                }
-            } 
-        }
-        stage("Install NPM Dependencies") {
-            steps {
-                sh "npm install"
-            }
-        }
-        stage('OWASP FS SCAN') {
-            steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-            }
-        }
-        stage ("Trivy File Scan") {
-            steps {
-                sh "trivy fs . > trivy.txt"
-            }
-        }
-        stage ("Build Docker Image") {
-            steps {
-                sh "docker build -t starbucks ."
-            }
-        }
-        stage ("Tag & Push to DockerHub") {
-            steps {
-                script {
-                    withDockerRegistry(credentialsId: 'docker') {
-                        sh "docker tag starbucks amonkincloud/starbucks:latest "
-                        sh "docker push amonkincloud/starbucks:latest "
-                    }
-                }
-            }
-        }
-        stage('Docker Scout Image') {
-            steps {
-                script{
-                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
-                       sh 'docker-scout quickview amonkincloud/starbucks:latest'
-                       sh 'docker-scout cves amonkincloud/starbucks:latest'
-                       sh 'docker-scout recommendations amonkincloud/starbucks:latest'
-                   }
-                }
-            }
-        }
-        stage ("Deploy to Conatiner") {
-            steps {
-                sh 'docker run -d --name starbucks -p 3000:3000 amonkincloud/starbucks:latest'
-            }
-        }
-    }
-    post {
-    always {
-        emailext attachLog: true,
-            subject: "'${currentBuild.result}'",
-            body: """
-                <html>
-                <body>
-                    <div style="background-color: #FFA07A; padding: 10px; margin-bottom: 10px;">
-                        <p style="color: white; font-weight: bold;">Project: ${env.JOB_NAME}</p>
-                    </div>
-                    <div style="background-color: #90EE90; padding: 10px; margin-bottom: 10px;">
-                        <p style="color: white; font-weight: bold;">Build Number: ${env.BUILD_NUMBER}</p>
-                    </div>
-                    <div style="background-color: #87CEEB; padding: 10px; margin-bottom: 10px;">
-                        <p style="color: white; font-weight: bold;">URL: ${env.BUILD_URL}</p>
-                    </div>
-                </body>
-                </html>
-            """,
-            to: 'provide_your_Email_id_here',
-            mimeType: 'text/html',
-            attachmentsPattern: 'trivy.txt'
-        }
-    }
-}
+✅ Features
 
-```
+✨ Automated end-to-end CI/CD pipeline
+🔍 Static code analysis with SonarQube
+🛡️ Multi-layer security scanning (OWASP, Trivy, Docker Scout)
+🐳 Containerized deployment with Docker
+🏗️ Infrastructure-as-Code with Terraform
+⚙️ Configuration management with Ansible
+☸️ Kubernetes-based deployment on AWS EKS
+📊 Quality gates and vulnerability reporting
+
+
+📌 Important Notes
+
+Keep deployment.yaml with IMAGE_PLACEHOLDER - Jenkins pipeline dynamically injects the image tag (sachinpatkari/starbucks:<build_number>)
+Always run terraform destroy after testing to avoid unexpected AWS billing
+Ensure AWS credentials are properly configured before running Terraform
+SonarQube quality gate failures will stop the pipeline
+Docker Scout provides detailed CVE analysis for container security
+
+
+🔐 Prerequisites
+
+AWS Account with appropriate permissions
+AWS CLI configured
+Terraform installed (v1.0+)
+Ansible installed
+kubectl installed
+Docker Hub account
+GitHub repository with source code
+
+
+📝 Environment Variables
+Configure these in Jenkins:
+
+DOCKERHUB_CREDENTIALS - Docker Hub username and password
+SONAR_TOKEN - SonarQube authentication token
+AWS_CREDENTIALS - AWS access keys for EKS deployment
+
+👨‍💻 Author
+Sachin Patkari
