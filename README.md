@@ -70,59 +70,8 @@ This project showcases a **fully automated CI/CD DevOps pipeline** that takes co
 ▼
 🌐 End Users
 
----
-
-## 🛠 Tech Stack
-
-### 🧱 Infrastructure & Cloud
-- **AWS Services:** VPC, EC2, EKS, IAM, NAT Gateway, Internet Gateway  
-- **IaC:** Terraform  
-- **Configuration Management:** Ansible  
-
-### ⚙️ CI/CD & DevOps
-- **CI/CD Tool:** Jenkins  
-- **Version Control:** Git, GitHub  
-- **Container Platform:** Docker  
-- **Registry:** DockerHub  
-- **Orchestration:** Kubernetes (EKS)  
-
-### 🔒 Security & Quality
-- **Code Quality:** SonarQube  
-- **Vulnerability Scanning:** OWASP, Trivy, Docker Scout  
-- **Quality Gates:** Automated via SonarQube  
-
-### 🧩 Application
-- **Runtime:** Node.js  
-- **Package Manager:** npm  
-
----
-
-## ✨ Features
-
-✅ **Automated Infrastructure** – AWS setup via Terraform  
-✅ **Zero-Touch Deployment** – Fully automated CI/CD via Jenkins  
-✅ **Multi-Stage Security** – OWASP, Trivy & Docker Scout scans  
-✅ **Quality Assurance** – Code analysis with SonarQube  
-✅ **Scalable Architecture** – Kubernetes-managed pods and services  
-✅ **GitOps Workflow** – Triggered automatically via GitHub push  
-✅ **High Availability** – Load-balanced EKS deployment  
-✅ **Immutable Infrastructure** – Container-based builds  
-
----
-
-## 📦 Prerequisites
-
-Before starting, ensure you have:
-
-- 🧾 AWS Account with IAM permissions  
-- ☁️ AWS CLI installed and configured  
-- 🔧 Terraform ≥ v1.0  
-- ⚙️ Ansible ≥ v2.9  
-- 🐳 Docker installed  
-- 🧭 kubectl installed  
-- 🔐 DockerHub Account  
-- 💻 Git installed  
-- 🌐 Access to Jenkins & SonarQube  
+yaml
+Copy code
 
 ---
 
@@ -145,13 +94,11 @@ starbucks/
 ├── package.json # Node.js dependencies
 ├── index.js # Application entry point
 └── README.md # Project documentation
-
-
 ---
 
 ## 🚀 Setup Guide
 
-### 1️⃣ Infrastructure Setup (Terraform)
+### 🧩 1️⃣ Infrastructure Setup (Terraform)
 
 ```bash
 cd infra
@@ -168,9 +115,15 @@ EKS Cluster and Node Groups
 
 Verify setup:
 
+bash
+Copy code
 aws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
 kubectl get nodes
-2️⃣ Jenkins Configuration (Ansible)
+```
+
+###⚙️ 2️⃣ Jenkins Configuration (Ansible)
+
+```bash
 cd ../ansible
 ansible-playbook -i inventory.ini playbook.yml
 This installs:
@@ -180,20 +133,23 @@ Jenkins, Docker, Terraform, Kubectl, AWS CLI
 Sonar Scanner, OWASP Dependency Check
 
 Access Jenkins at:
+👉 http://<JENKINS_PUBLIC_IP>:8080
+```
 
-http://<JENKINS_PUBLIC_IP>:8080
-3️⃣ Configure Jenkins Credentials
+###🔐 3️⃣ Configure Jenkins Credentials
+
+```bash
 Go to:
 Manage Jenkins → Credentials → Global Credentials
 
-Add the following:
+Add the following credentials:
 
 ID	Type	Description
 github-creds	Username/Password	GitHub Access
 docker	Username/Password	DockerHub Access
 aws-cred	AWS Credentials	Access Key ID & Secret
 Sonar-token	Secret Text	SonarQube Token
-
+```
 🔄 CI/CD Pipeline
 Stage	Purpose	Tool
 Clean Workspace	Clear Jenkins workspace	Jenkins
@@ -209,47 +165,47 @@ Push to Registry	Upload to DockerHub	Docker
 Apply aws-auth	Update kube permissions	kubectl
 Deploy to EKS	Rollout deployment	Kubernetes
 
-🚢 Deployment
-Rolling Update Strategy:
 
-replicas: 2
-strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 0
-Access the application:
-
+### Access the application:
+```bash
 kubectl get svc starbucks-service
 Example Output:
-
 EXTERNAL-IP: a1234b5678.elb.ap-south-1.amazonaws.com
 🌐 Visit → http://<EXTERNAL-IP>:3000
+```
 
-🔒 Monitoring & Security
-Implemented Layers
-Code: SonarQube
+### 🔒 Monitoring & Security
+   Implemented Layers
 
-Dependencies: OWASP
+   Code: SonarQube
 
-Filesystem: Trivy
+   Dependencies: OWASP
 
-Container: Docker Scout
+   Filesystem: Trivy
 
-Network: AWS Security Groups
+   Container: Docker Scout
 
-Access: IAM & RBAC
+   Network: AWS Security Groups
 
-🧰 Troubleshooting
+   Access: IAM & RBAC
+
+
+### 🧰 Troubleshooting
+
 🧩 EKS Nodes Not Joining
-
+```bash
 kubectl get nodes
 kubectl get configmap aws-auth -n kube-system -o yaml
-🐳 Docker Image Pull Error
+```
 
+🐳 Docker Image Pull Error
+```bash
 docker pull sachinpatkari/starbucks:<BUILD_NUMBER>
 kubectl describe pod <pod-name>
+```
+
 🕸 LoadBalancer Pending
+```bash
 Check subnet tags
 
 Verify Security Groups
@@ -257,12 +213,15 @@ Verify Security Groups
 Inspect events:
 
 kubectl describe svc starbucks-service
-💰 Cost Management
-To avoid AWS charges:
+```
 
+💰 Cost Management
+
+To avoid AWS charges:
+```bash
 cd infra
 terraform destroy -auto-approve
-If destroy fails, delete resources manually in this order:
+#If destroy fails, delete resources manually in this order:
 
 Load Balancer
 
@@ -274,29 +233,22 @@ EKS Cluster
 
 VPC
 
+```
+
 💡 Cost Saving Tips
+
 Use small EC2 instances like t3.medium
 
 Enable auto-scaling
 
 Shut down resources after testing
 
-Estimated Monthly Cost (24x7)
 Resource	Approx. Cost
 EKS Control Plane	$72
 2x Worker Nodes	$60
 NAT Gateway	$32
 Load Balancer	$16
 Total	~$180/month
-
-🤝 Contributing
-Contributions are welcome!
-To contribute:
-
-git checkout -b feature/AmazingFeature
-git commit -m "Add new feature"
-git push origin feature/AmazingFeature
-Then open a Pull Request.
 
 👤 Author
 👨‍💻 Sachin Patkari
@@ -317,6 +269,3 @@ Jenkins Community
 Terraform Guides
 
 OWASP & Trivy
-
-⭐ If you found this project helpful, please give it a star!
-🧡 Made with love by Sachin Patkari
