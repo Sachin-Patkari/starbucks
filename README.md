@@ -241,7 +241,9 @@ Total	~$180/month
 
 👤 Author
 👨‍💻 Sachin Patkari
+
 💼 DevOps Engineer | Cloud Enthusiast
+
 🌐 AWS | Jenkins | Docker | Kubernetes | Terraform
 
 📧 your.email@example.com
