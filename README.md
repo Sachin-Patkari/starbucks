@@ -1,277 +1,442 @@
-# ☕ Starbucks – Automated CI/CD Pipeline on AWS EKS
+☕ Starbucks - Automated CI/CD Pipeline on AWS EKS
+Show Image
+Show Image
+Show Image
+Show Image
+Show Image
+A production-grade Node.js web application demonstrating complete DevOps automation with Jenkins CI/CD, Docker containerization, Kubernetes orchestration on AWS EKS, and infrastructure provisioned via Terraform and Ansible.
+📋 Table of Contents
 
-## 🚀 Overview
-Starbucks is a Node.js-based web application that demonstrates a **fully automated CI/CD DevOps pipeline** using Jenkins, Docker, Kubernetes, and AWS cloud infrastructure.  
-The application is deployed on **Amazon EKS (Elastic Kubernetes Service)**, provisioned using **Terraform** and configured using **Ansible**.
+Overview
+Architecture
+Tech Stack
+Features
+Prerequisites
+Project Structure
+Setup Guide
 
-This project showcases complete DevOps automation — from infrastructure provisioning to deployment — following real-world industry practices.
+Infrastructure Provisioning
+Jenkins Configuration
+Pipeline Setup
 
----
 
-## 🧱 Project Architecture
+CI/CD Pipeline
+Deployment
+Monitoring & Security
+Troubleshooting
+Cost Management
+Contributing
+Author
 
-┌────────────────────────────┐
-│ Developer │
-│ (GitHub - Source Code) │
-└──────────────┬─────────────┘
-│ (git push)
-▼
-┌────────────────────────────┐
-│ Jenkins EC2 │
-│ CI/CD Pipeline Automation │
-│ - SonarQube Analysis │
-│ - OWASP Scan │
-│ - Trivy Scan │
-│ - Docker Build & Push │
-│ - Deploy to EKS Cluster │
-└──────────────┬─────────────┘
-│
-▼
-┌────────────────────────────┐
-│ DockerHub │
-│ Stores versioned images │
-└──────────────┬─────────────┘
-│
-▼
-┌────────────────────────────┐
-│ AWS EKS Cluster │
-│ (Pods, Services, LoadBalancer)
-└────────────────────────────┘
 
-yaml
-Copy code
+🚀 Overview
+This project showcases a fully automated CI/CD DevOps pipeline that takes code from development to production on AWS EKS. The application demonstrates real-world industry practices including:
 
----
+Infrastructure as Code (IaC) using Terraform
+Configuration Management with Ansible
+Continuous Integration/Continuous Deployment via Jenkins
+Container Orchestration on Kubernetes (EKS)
+Security scanning at multiple stages
+Automated quality gates and code analysis
 
-## ⚙️ Technologies Used
 
-| Category | Tools |
-|-----------|-------|
-| **Version Control** | Git, GitHub |
-| **CI/CD Tool** | Jenkins |
-| **Code Quality & Security** | SonarQube, OWASP Dependency Check, Trivy, Docker Scout |
-| **Containerization** | Docker |
-| **Container Registry** | DockerHub |
-| **Orchestration** | Kubernetes (EKS) |
-| **Infrastructure as Code** | Terraform |
-| **Configuration Management** | Ansible |
-| **Cloud Provider** | AWS (VPC, EC2, EKS, IAM, Subnets, etc.) |
-| **Monitoring (optional)** | Prometheus, Grafana |
+🏗 Architecture
+┌─────────────────────────────────────────────────────────────────┐
+│                         Developer Workflow                       │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             │ git push
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                       GitHub Repository                          │
+│                    (Source Code & Webhook)                       │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             │ triggers
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      Jenkins CI/CD Server                        │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  Pipeline Stages:                                        │  │
+│  │  • Code Quality Analysis (SonarQube)                     │  │
+│  │  • Security Scanning (OWASP, Trivy, Docker Scout)       │  │
+│  │  • Docker Image Build                                    │  │
+│  │  • Push to Container Registry                            │  │
+│  │  • Deploy to EKS Cluster                                 │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                          DockerHub                               │
+│              (Container Image Registry)                          │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             │ kubectl apply
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      AWS EKS Cluster                             │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  • Worker Nodes (EC2 Instances)                          │  │
+│  │  • Application Pods (2 replicas)                         │  │
+│  │  • LoadBalancer Service                                  │  │
+│  │  • Auto-scaling & Self-healing                           │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             ▼
+                      ┌──────────────┐
+                      │   End Users  │
+                      └──────────────┘
 
----
+🛠 Tech Stack
+Infrastructure & Cloud
 
-## 📁 Project Structure
+AWS Services: VPC, EC2, EKS, IAM, NAT Gateway, Internet Gateway
+IaC: Terraform
+Configuration Management: Ansible
 
+CI/CD & DevOps
+
+CI/CD Tool: Jenkins
+Version Control: Git, GitHub
+Container Platform: Docker
+Container Registry: DockerHub
+Orchestration: Kubernetes (Amazon EKS)
+
+Security & Quality
+
+Code Quality: SonarQube
+Vulnerability Scanning: OWASP Dependency Check, Trivy, Docker Scout
+Quality Gates: Automated quality thresholds
+
+Application
+
+Runtime: Node.js
+Package Manager: NPM
+
+
+✨ Features
+
+✅ Automated Infrastructure - Complete AWS infrastructure provisioned via Terraform
+✅ Zero-Touch Deployment - Code push triggers automatic build and deployment
+✅ Multi-Stage Security - Vulnerability scanning at code, dependency, and image levels
+✅ Quality Assurance - Automated code quality checks with SonarQube
+✅ Container Orchestration - Self-healing, auto-scaling Kubernetes deployments
+✅ High Availability - Multi-replica deployment with LoadBalancer
+✅ GitOps Workflow - Git as single source of truth
+✅ Immutable Infrastructure - Container-based deployment strategy
+
+
+📦 Prerequisites
+Before starting, ensure you have:
+
+AWS Account with appropriate permissions
+AWS CLI configured with credentials
+Terraform (v1.0+)
+Ansible (v2.9+)
+kubectl installed
+Git installed
+DockerHub Account
+Domain/Access to set up Jenkins, SonarQube
+
+
+📁 Project Structure
 starbucks/
 │
 ├── ansible/
-│ ├── inventory.ini # Jenkins server IP
-│ └── playbook.yml # Installs Jenkins, Docker, and dependencies
+│   ├── inventory.ini           # Jenkins server IP configuration
+│   └── playbook.yml            # Ansible playbook for Jenkins setup
 │
 ├── infra/
-│ └── main.tf # Terraform code for creating VPC, EKS, subnets, etc.
+│   └── main.tf                 # Terraform configuration for AWS resources
 │
 ├── k8s/
-│ ├── deployment.yaml # Kubernetes deployment (with IMAGE_PLACEHOLDER)
-│ └── service.yaml # Kubernetes LoadBalancer service
+│   ├── deployment.yaml         # Kubernetes deployment manifest
+│   └── service.yaml            # Kubernetes service (LoadBalancer)
 │
-├── Jenkinsfile # Full CI/CD pipeline configuration
-├── Dockerfile # Defines Node.js app image build
-├── package.json # Node.js dependencies
-├── index.js # Main app source code
-└── README.md # Documentation
+├── src/                        # Application source code
+│   ├── index.js               # Main Node.js application
+│   └── ...                    # Additional application files
+│
+├── Jenkinsfile                 # Jenkins pipeline configuration
+├── Dockerfile                  # Docker image build instructions
+├── package.json               # Node.js dependencies
+├── sonar-project.properties   # SonarQube configuration
+└── README.md                  # This file
 
-yaml
-Copy code
+🚀 Setup Guide
+1. Infrastructure Provisioning (Terraform)
+Step 1: Clone the repository
+bashgit clone https://github.com/yourusername/starbucks-cicd.git
+cd starbucks-cicd
+Step 2: Initialize and apply Terraform
+bashcd infra
+terraform init
+terraform plan
+terraform apply -auto-approve
+This creates:
 
----
+VPC with public and private subnets
+Internet Gateway and NAT Gateway
+Security Groups
+EKS Cluster (Control Plane)
+EKS Node Group (Worker Nodes)
+IAM Roles and Policies
 
-## 🧩 CI/CD Pipeline Stages (Jenkinsfile)
-
-| Stage | Description |
-|--------|-------------|
-| **Clean Workspace** | Ensures a clean Jenkins environment |
-| **Git Checkout** | Pulls latest code from GitHub |
-| **SonarQube Analysis** | Runs static code analysis |
-| **Quality Gate** | Checks code quality threshold |
-| **Install NPM Dependencies** | Installs Node.js dependencies |
-| **OWASP Dependency Check** | Scans open-source libraries for vulnerabilities |
-| **Trivy File Scan** | Scans local files for vulnerabilities and secrets |
-| **Build Docker Image** | Builds and tags image with `BUILD_NUMBER` |
-| **Docker Scout Image** | Analyzes Docker image for vulnerabilities |
-| **Push to DockerHub** | Pushes the image to DockerHub registry |
-| **Apply aws-auth** | Grants Jenkins permissions on EKS cluster |
-| **Deploy to EKS** | Deploys latest image on Kubernetes cluster |
-
----
-
-## 🌐 Deployment Flow
-
-1. **Developer makes code changes** → commits & pushes to GitHub.  
-2. **GitHub Webhook triggers Jenkins** pipeline automatically.  
-3. Jenkins runs:
-   - SonarQube analysis
-   - Vulnerability scans (OWASP, Trivy, Docker Scout)
-   - Builds and pushes Docker image to DockerHub
-   - Deploys updated version to AWS EKS  
-4. **Kubernetes** pulls the latest Docker image and updates pods automatically.  
-5. The **LoadBalancer service** exposes the app publicly.
-
----
-
-## 🧰 Infrastructure Setup (Terraform)
-
-1. Create all infrastructure:
-   ```bash
-   cd infra
-   terraform init
-   terraform apply
-Terraform provisions:
-
-VPC, subnets, Internet Gateway
-
-NAT Gateway
-
-Security groups
-
-EKS cluster
-
-Node groups
-
-Verify cluster:
-
-bash
-Copy code
-aws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
+Step 3: Configure kubectl
+bashaws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
 kubectl get nodes
-⚙️ Jenkins Setup (via Ansible)
-Run Ansible playbook:
+Expected output: 2-3 worker nodes in Ready state
 
-bash
-Copy code
-cd ansible
-ansible-playbook -i inventory.ini playbook.yml
-Installs:
+2. Jenkins Configuration (Ansible)
+Step 1: Update inventory file
+bashcd ../ansible
+nano inventory.ini
+Add your Jenkins server IP:
+ini[jenkins_server]
+<JENKINS_EC2_PUBLIC_IP> ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/your-key.pem
+Step 2: Run Ansible playbook
+bashansible-playbook -i inventory.ini playbook.yml
+This installs:
 
-Jenkins
-
-Docker
-
+Jenkins with required plugins
+Docker and Docker Compose
 AWS CLI
-
-Kubectl
-
+kubectl
 Terraform
+Sonar Scanner CLI
+OWASP Dependency Check
 
-Sonar Scanner
+Step 3: Access Jenkins
+bash# Get initial admin password
+ssh ubuntu@<JENKINS_IP>
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+Navigate to: http://<JENKINS_IP>:8080
 
-Configure credentials:
+3. Pipeline Setup
+Step 1: Configure Jenkins Credentials
+Go to Manage Jenkins > Credentials > System > Global credentials
+Add the following credentials:
+IDTypeDescriptiongithub-credsUsername/PasswordGitHub credentialsdockerUsername/PasswordDockerHub credentialsaws-credSecret textAWS Access Key ID and SecretSonar-tokenSecret textSonarQube authentication token
+Step 2: Configure SonarQube
 
-GitHub (github-creds)
+Install and configure SonarQube server
+Generate authentication token
+Add token to Jenkins credentials as Sonar-token
+Configure SonarQube server in Jenkins system settings
 
-DockerHub (docker)
+Step 3: Create Jenkins Pipeline
 
-AWS (aws-cred)
+New Item → Pipeline
+Name: Starbucks-CICD
+Pipeline definition: Pipeline script from SCM
+SCM: Git
+Repository URL: Your GitHub repository
+Credentials: github-creds
+Branch: */main
+Script Path: Jenkinsfile
 
-SonarQube Token (Sonar-token)
+Step 4: Configure GitHub Webhook
+In your GitHub repository:
 
-🐳 Kubernetes Deployment
-Deployment file (k8s/deployment.yaml):
+Settings → Webhooks → Add webhook
+Payload URL: http://<JENKINS_IP>:8080/github-webhook/
+Content type: application/json
+Events: Just the push event
 
-yaml
-Copy code
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: starbucks-app
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: starbucks
-  template:
-    metadata:
-      labels:
-        app: starbucks
-    spec:
-      containers:
-        - name: starbucks
-          image: IMAGE_PLACEHOLDER
-          ports:
-            - containerPort: 3000
-Jenkins replaces the image dynamically:
 
-bash
-Copy code
-sed "s|IMAGE_PLACEHOLDER|sachinpatkari/starbucks:${BUILD_NUMBER}|g" k8s/deployment.yaml > k8s/deployment-final.yaml
-kubectl apply -f k8s/deployment-final.yaml
-💻 Running the Project Again
-If you’ve destroyed the infra:
+🔄 CI/CD Pipeline
+The Jenkins pipeline consists of the following stages:
+StagePurposeToolsClean WorkspaceEnsures clean build environmentJenkinsGit CheckoutFetches latest code from repositoryGitSonarQube AnalysisStatic code analysis and quality metricsSonarQubeQuality GateEnforces code quality standardsSonarQubeInstall DependenciesInstalls Node.js packagesNPMOWASP Dependency CheckScans dependencies for vulnerabilitiesOWASPTrivy File ScanScans filesystem for vulnerabilitiesTrivyBuild Docker ImageCreates container image with build number tagDockerDocker Scout ScanAnalyzes Docker image for security issuesDocker ScoutPush to RegistryUploads image to DockerHubDockerConfigure EKS AccessUpdates aws-auth ConfigMapkubectlDeploy to EKSDeploys application to Kuberneteskubectl
+Pipeline Execution Flow
+bash# Automated on git push:
+Developer commits → GitHub webhook → Jenkins trigger
+    ↓
+Code quality & security checks
+    ↓
+Docker image build (tagged with BUILD_NUMBER)
+    ↓
+Push to DockerHub
+    ↓
+Update Kubernetes deployment
+    ↓
+Rolling update on EKS cluster
+    ↓
+Application accessible via LoadBalancer URL
 
-bash
-Copy code
-cd infra
-terraform apply          # Recreate infrastructure
-cd ../ansible
-ansible-playbook -i inventory.ini playbook.yml   # Reinstall Jenkins
-Then just:
+🚢 Deployment
+Kubernetes Deployment Strategy
+The application uses a Rolling Update strategy:
+yaml# k8s/deployment.yaml
+replicas: 2
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+Benefits:
 
-Trigger your Jenkins pipeline (or push to GitHub).
+Zero downtime deployments
+Automatic rollback on failure
+Gradual traffic shifting
 
-Jenkins automatically builds, scans, pushes, and deploys.
+Accessing the Application
+Step 1: Get LoadBalancer URL
+bashkubectl get service starbucks-service
+Step 2: Access application
+http://<LOADBALANCER-DNS>:3000
+Verifying Deployment
+bash# Check pods
+kubectl get pods -l app=starbucks
 
-💰 Cost Management (Important)
-To avoid AWS billing:
+# Check deployment
+kubectl describe deployment starbucks-app
 
-Delete resources after use:
+# Check service
+kubectl get svc starbucks-service
 
-bash
-Copy code
-terraform destroy
-If errors occur, manually delete:
+# View logs
+kubectl logs -l app=starbucks --tail=100
 
-Load balancers
+🔒 Monitoring & Security
+Security Measures Implemented
 
-NAT gateways
+Code Level: SonarQube static analysis
+Dependency Level: OWASP vulnerability scanning
+Filesystem Level: Trivy security scanning
+Container Level: Docker Scout image analysis
+Network Level: Security groups and VPC isolation
+Access Control: IAM roles and RBAC policies
 
-Elastic IPs
+Adding Monitoring (Optional)
+Deploy Prometheus and Grafana for monitoring:
+bash# Add Prometheus Helm repo
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
 
-Network interfaces
+# Install Prometheus
+helm install prometheus prometheus-community/kube-prometheus-stack
 
-Subnets
+# Port forward Grafana
+kubectl port-forward svc/prometheus-grafana 3000:80
+Access Grafana at http://localhost:3000 (admin/prom-operator)
 
-Internet Gateway
+🔧 Troubleshooting
+Common Issues
+Issue: EKS nodes not joining cluster
+bash# Check node status
+kubectl get nodes
 
-Finally → VPC
+# Verify aws-auth ConfigMap
+kubectl get configmap aws-auth -n kube-system -o yaml
 
-📸 Screenshots (optional)
-You can include:
+# Update aws-auth if needed
+kubectl apply -f aws-auth-cm.yaml
+Issue: Jenkins unable to deploy to EKS
+bash# Verify Jenkins has kubectl configured
+kubectl config view
 
-Jenkins pipeline stages
+# Check IAM permissions for Jenkins EC2 role
+aws sts get-caller-identity
 
-SonarQube dashboard
+# Ensure Jenkins is added to aws-auth ConfigMap
+Issue: Docker image pull failures
+bash# Verify DockerHub credentials
+docker login
 
-DockerHub image
+# Check deployment image name
+kubectl describe pod <pod-name>
 
-AWS EKS pods (kubectl get pods)
+# Pull image manually to test
+docker pull sachinpatkari/starbucks:<BUILD_NUMBER>
+Issue: LoadBalancer stuck in pending
+bash# Check service events
+kubectl describe svc starbucks-service
 
-Live application URL
+# Verify security groups allow traffic
+# Ensure subnets are tagged for ELB discovery
 
-🏁 Conclusion
-This project demonstrates end-to-end DevOps automation:
+💰 Cost Management
+AWS Cost Optimization
+Important: Running this project incurs AWS costs. Follow these practices:
 
-Infrastructure as Code (Terraform)
+Delete resources when not in use:
 
-Configuration Management (Ansible)
+bashcd infra
+terraform destroy -auto-approve
 
-Continuous Integration (Jenkins)
+If terraform destroy fails, manually delete:
 
-Continuous Deployment (EKS + Docker)
+Load Balancers (EC2 Console)
+NAT Gateways (VPC Console)
+Elastic IPs (VPC Console)
+Network Interfaces (EC2 Console)
+EKS Cluster (EKS Console)
+Then run terraform destroy again
 
-Security & Quality Gates (SonarQube, Trivy, OWASP)
 
-It represents a production-grade CI/CD pipeline used in real organizations.
+Cost-saving tips:
+
+Use t3.medium instances for worker nodes
+Configure auto-scaling to scale down during off-hours
+Use spot instances for non-production
+Set up AWS Budget alerts
+
+
+
+Estimated Monthly Cost (if running 24/7):
+
+EKS Control Plane: $72/month
+Worker Nodes (2x t3.medium): ~$60/month
+NAT Gateway: ~$32/month
+Load Balancer: ~$16/month
+Total: ~$180/month
+
+
+🤝 Contributing
+Contributions are welcome! Please follow these steps:
+
+Fork the repository
+Create a feature branch (git checkout -b feature/AmazingFeature)
+Commit your changes (git commit -m 'Add some AmazingFeature')
+Push to the branch (git push origin feature/AmazingFeature)
+Open a Pull Request
+
+
+📝 License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 👤 Author
 Sachin Patkari
-💼 DevOps Engineer | Cloud Enthusiast | AWS | Jenkins | Docker | Kubernetes
+
+💼 DevOps Engineer | Cloud Enthusiast
+🌐 Specialization: AWS | Jenkins | Docker | Kubernetes | Terraform
+📧 Email: your.email@example.com
+🔗 LinkedIn: linkedin.com/in/sachinpatkari
+🐙 GitHub: @sachinpatkari
+
+
+🙏 Acknowledgments
+
+AWS Documentation
+Kubernetes Official Docs
+Jenkins Community
+HashiCorp Terraform Guides
+DevOps Community
+
+
+📸 Screenshots
+Jenkins Pipeline Success
+Show Image
+SonarQube Analysis
+Show Image
+EKS Cluster
+Show Image
+Application Running
+Show Image
+
+<div align="center">
+⭐ Star this repo if you find it helpful!
+Made by Sachin Patkari
+</div>
