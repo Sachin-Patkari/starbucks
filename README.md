@@ -121,7 +121,7 @@ aws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
 kubectl get nodes
 ```
 
-###⚙️ 2️⃣ Jenkins Configuration (Ansible)
+⚙️ 2️⃣ Jenkins Configuration (Ansible)
 
 ```bash
 cd ../ansible
@@ -136,7 +136,7 @@ Access Jenkins at:
 👉 http://<JENKINS_PUBLIC_IP>:8080
 ```
 
-###🔐 3️⃣ Configure Jenkins Credentials
+🔐 3️⃣ Configure Jenkins Credentials
 
 ```bash
 Go to:
@@ -150,21 +150,6 @@ docker	Username/Password	DockerHub Access
 aws-cred	AWS Credentials	Access Key ID & Secret
 Sonar-token	Secret Text	SonarQube Token
 ```
-🔄 CI/CD Pipeline
-Stage	Purpose	Tool
-Clean Workspace	Clear Jenkins workspace	Jenkins
-Git Checkout	Clone source code	Git
-SonarQube Analysis	Code quality check	SonarQube
-Quality Gate	Approve/Reject build	SonarQube
-Install Dependencies	Install Node packages	npm
-OWASP Check	Dependency vulnerability scan	OWASP
-Trivy File Scan	Filesystem security scan	Trivy
-Build Docker Image	Build tagged image	Docker
-Docker Scout Scan	Image vulnerability check	Docker Scout
-Push to Registry	Upload to DockerHub	Docker
-Apply aws-auth	Update kube permissions	kubectl
-Deploy to EKS	Rollout deployment	Kubernetes
-
 
 ### Access the application:
 ```bash
@@ -215,7 +200,7 @@ Inspect events:
 kubectl describe svc starbucks-service
 ```
 
-💰 Cost Management
+###💰 Cost Management
 
 To avoid AWS charges:
 ```bash
@@ -235,7 +220,8 @@ VPC
 
 ```
 
-💡 Cost Saving Tips
+###💡 Cost Saving Tips
+```bash
 
 Use small EC2 instances like t3.medium
 
@@ -249,6 +235,7 @@ EKS Control Plane	$72
 NAT Gateway	$32
 Load Balancer	$16
 Total	~$180/month
+```
 
 👤 Author
 👨‍💻 Sachin Patkari
