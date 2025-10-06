@@ -1,10 +1,9 @@
 ☕ Starbucks - Automated CI/CD Pipeline on AWS EKS
-#Show Image
-#Show Image
-#Show Image
-#Show Image
-#Show Image
-
+Show Image
+Show Image
+Show Image
+Show Image
+Show Image
 A production-grade Node.js web application demonstrating complete DevOps automation with Jenkins CI/CD, Docker containerization, Kubernetes orchestration on AWS EKS, and infrastructure provisioned via Terraform and Ansible.
 
 📋 Table of Contents
@@ -16,12 +15,6 @@ Features
 Prerequisites
 Project Structure
 Setup Guide
-
-1. Infrastructure Provisioning
-2. Jenkins Configuration
-3. Pipeline Setup
-
-
 CI/CD Pipeline
 Deployment
 Monitoring & Security
@@ -168,11 +161,11 @@ starbucks/
 └── README.md                  # This file
 
 🚀 Setup Guide
-1. Infrastructure Provisioning (Terraform)
-Step 1: Clone the repository
+1️⃣ Infrastructure Provisioning (Terraform)
+Clone the repository
 bashgit clone https://github.com/yourusername/starbucks-cicd.git
 cd starbucks-cicd
-Step 2: Initialize and apply Terraform
+Initialize and apply Terraform
 bashcd infra
 terraform init
 terraform plan
@@ -186,19 +179,19 @@ EKS Cluster (Control Plane)
 EKS Node Group (Worker Nodes)
 IAM Roles and Policies
 
-Step 3: Configure kubectl
+Configure kubectl
 bashaws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
 kubectl get nodes
 Expected output: 2-3 worker nodes in Ready state
 
-2. Jenkins Configuration (Ansible)
-Step 1: Update inventory file
+2️⃣ Jenkins Configuration (Ansible)
+Update inventory file
 bashcd ../ansible
 nano inventory.ini
 Add your Jenkins server IP:
 ini[jenkins_server]
 <JENKINS_EC2_PUBLIC_IP> ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/your-key.pem
-Step 2: Run Ansible playbook
+Run Ansible playbook
 bashansible-playbook -i inventory.ini playbook.yml
 This installs:
 
@@ -210,25 +203,30 @@ Terraform
 Sonar Scanner CLI
 OWASP Dependency Check
 
-Step 3: Access Jenkins
+Access Jenkins
 bash# Get initial admin password
 ssh ubuntu@<JENKINS_IP>
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 Navigate to: http://<JENKINS_IP>:8080
 
-3. Pipeline Setup
-Step 1: Configure Jenkins Credentials
+3️⃣ Pipeline Setup
+Configure Jenkins Credentials
 Go to Manage Jenkins > Credentials > System > Global credentials
 Add the following credentials:
-IDTypeDescriptiongithub-credsUsername/PasswordGitHub credentialsdockerUsername/PasswordDockerHub credentialsaws-credSecret textAWS Access Key ID and SecretSonar-tokenSecret textSonarQube authentication token
-Step 2: Configure SonarQube
+
+github-creds → Username/Password → GitHub credentials
+docker → Username/Password → DockerHub credentials
+aws-cred → Secret text → AWS Access Key ID and Secret
+Sonar-token → Secret text → SonarQube authentication token
+
+Configure SonarQube
 
 Install and configure SonarQube server
 Generate authentication token
 Add token to Jenkins credentials as Sonar-token
 Configure SonarQube server in Jenkins system settings
 
-Step 3: Create Jenkins Pipeline
+Create Jenkins Pipeline
 
 New Item → Pipeline
 Name: Starbucks-CICD
@@ -239,7 +237,7 @@ Credentials: github-creds
 Branch: */main
 Script Path: Jenkinsfile
 
-Step 4: Configure GitHub Webhook
+Configure GitHub Webhook
 In your GitHub repository:
 
 Settings → Webhooks → Add webhook
@@ -250,9 +248,9 @@ Events: Just the push event
 
 🔄 CI/CD Pipeline
 The Jenkins pipeline consists of the following stages:
+Pipeline Stages
 StagePurposeToolsClean WorkspaceEnsures clean build environmentJenkinsGit CheckoutFetches latest code from repositoryGitSonarQube AnalysisStatic code analysis and quality metricsSonarQubeQuality GateEnforces code quality standardsSonarQubeInstall DependenciesInstalls Node.js packagesNPMOWASP Dependency CheckScans dependencies for vulnerabilitiesOWASPTrivy File ScanScans filesystem for vulnerabilitiesTrivyBuild Docker ImageCreates container image with build number tagDockerDocker Scout ScanAnalyzes Docker image for security issuesDocker ScoutPush to RegistryUploads image to DockerHubDockerConfigure EKS AccessUpdates aws-auth ConfigMapkubectlDeploy to EKSDeploys application to Kuberneteskubectl
 Pipeline Execution Flow
-bash# Automated on git push:
 Developer commits → GitHub webhook → Jenkins trigger
     ↓
 Code quality & security checks
@@ -284,9 +282,9 @@ Automatic rollback on failure
 Gradual traffic shifting
 
 Accessing the Application
-Step 1: Get LoadBalancer URL
+Get LoadBalancer URL
 bashkubectl get service starbucks-service
-Step 2: Access application
+Access application
 http://<LOADBALANCER-DNS>:3000
 Verifying Deployment
 bash# Check pods
@@ -361,11 +359,13 @@ kubectl describe svc starbucks-service
 
 💰 Cost Management
 AWS Cost Optimization
-Important: Running this project incurs AWS costs. Follow these practices:
-1. Delete resources when not in use:
+
+⚠️ Important: Running this project incurs AWS costs. Follow these practices to manage expenses.
+
+Delete resources when not in use:
 bashcd infra
 terraform destroy -auto-approve
-2. If terraform destroy fails, manually delete:
+If terraform destroy fails, manually delete in this order:
 
 Load Balancers (EC2 Console)
 NAT Gateways (VPC Console)
@@ -374,14 +374,14 @@ Network Interfaces (EC2 Console)
 EKS Cluster (EKS Console)
 Then run terraform destroy again
 
-3. Cost-saving tips:
+Cost-saving tips:
 
 Use t3.medium instances for worker nodes
 Configure auto-scaling to scale down during off-hours
-Use spot instances for non-production
+Use spot instances for non-production environments
 Set up AWS Budget alerts
 
-Estimated Monthly Cost (if running 24/7):
+Estimated Monthly Cost (24/7 operation)
 
 EKS Control Plane: $72/month
 Worker Nodes (2x t3.medium): ~$60/month
@@ -434,5 +434,5 @@ Show Image
 
 <div align="center">
 ⭐ If you find this project helpful, please consider giving it a star!
-Made by Sachin Patkari
+Made with ❤️ by Sachin Patkari
 </div>
