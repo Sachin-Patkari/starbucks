@@ -246,17 +246,7 @@ Total	~$180/month
 
 🌐 AWS | Jenkins | Docker | Kubernetes | Terraform
 
-📧 your.email@example.com
-🔗 LinkedIn
-🐙 GitHub
+📧 sachinx2003x@gmail.com
+🔗 LinkedIn - https://www.linkedin.com/in/sachin-patkari-a863042b7/
+🐙 GitHub - https://github.com/Sachin-Patkari
 
-🙏 Acknowledgments
-AWS Documentation
-
-Kubernetes Docs
-
-Jenkins Community
-
-Terraform Guides
-
-OWASP & Trivy
