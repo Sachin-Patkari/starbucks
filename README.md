@@ -1,124 +1,277 @@
+# ☕ Starbucks – Automated CI/CD Pipeline on AWS EKS
 
-# ☕ Starbucks DevSecOps Project
+## 🚀 Overview
+Starbucks is a Node.js-based web application that demonstrates a **fully automated CI/CD DevOps pipeline** using Jenkins, Docker, Kubernetes, and AWS cloud infrastructure.  
+The application is deployed on **Amazon EKS (Elastic Kubernetes Service)**, provisioned using **Terraform** and configured using **Ansible**.
 
-This project is a **fully automated CI/CD pipeline** that builds, scans, packages, and deploys a Starbucks clone application to **AWS EKS** using **Jenkins, Docker, Kubernetes, SonarQube, Trivy, OWASP, Docker Scout, Ansible, and Terraform**.
-
----
-
-## 🚀 Project Flow
-
-1. **Infrastructure Setup (Terraform + Ansible)**
-   - Terraform provisions:
-     - VPC, Subnets, Internet Gateway
-     - EKS Cluster & Worker Nodes
-     - Jenkins EC2 instance
-   - Ansible installs:
-     - Jenkins
-     - Docker
-     - Trivy
-     - SonarQube (if required)
-
-2. **CI/CD Pipeline (Jenkinsfile)**
-   - Cleans workspace
-   - Clones source code from GitHub
-   - Runs **SonarQube** static code analysis
-   - Waits for **Sonar Quality Gate**
-   - Installs **npm dependencies**
-   - Runs **OWASP Dependency Check**
-   - Runs **Trivy File System Scan**
-   - Builds Docker image of the app
-   - Runs **Docker Scout** (quickview, CVEs, recommendations)
-   - Pushes Docker image to **DockerHub**
-   - Updates Kubernetes manifests (`deployment.yaml` & `service.yaml`) with new image tag
-   - Deploys to **AWS EKS**
-   - Verifies rollout
-
-3. **Kubernetes Deployment**
-   - `deployment.yaml` → Deploys app containers
-   - `service.yaml` → Exposes app using AWS LoadBalancer
+This project showcases complete DevOps automation — from infrastructure provisioning to deployment — following real-world industry practices.
 
 ---
 
-## 🛠 Tools & Technologies
+## 🧱 Project Architecture
 
-- **Infrastructure:** Terraform, Ansible, AWS (EC2, VPC, EKS, IAM, ELB)
-- **CI/CD:** Jenkins
-- **Code Analysis:** SonarQube
-- **Security Scanning:** Trivy, OWASP Dependency-Check, Docker Scout
-- **Containerization:** Docker, DockerHub
-- **Orchestration:** Kubernetes (EKS)
+┌────────────────────────────┐
+│ Developer │
+│ (GitHub - Source Code) │
+└──────────────┬─────────────┘
+│ (git push)
+▼
+┌────────────────────────────┐
+│ Jenkins EC2 │
+│ CI/CD Pipeline Automation │
+│ - SonarQube Analysis │
+│ - OWASP Scan │
+│ - Trivy Scan │
+│ - Docker Build & Push │
+│ - Deploy to EKS Cluster │
+└──────────────┬─────────────┘
+│
+▼
+┌────────────────────────────┐
+│ DockerHub │
+│ Stores versioned images │
+└──────────────┬─────────────┘
+│
+▼
+┌────────────────────────────┐
+│ AWS EKS Cluster │
+│ (Pods, Services, LoadBalancer)
+└────────────────────────────┘
+
+yaml
+Copy code
 
 ---
 
-## 📂 Project Structure
+## ⚙️ Technologies Used
+
+| Category | Tools |
+|-----------|-------|
+| **Version Control** | Git, GitHub |
+| **CI/CD Tool** | Jenkins |
+| **Code Quality & Security** | SonarQube, OWASP Dependency Check, Trivy, Docker Scout |
+| **Containerization** | Docker |
+| **Container Registry** | DockerHub |
+| **Orchestration** | Kubernetes (EKS) |
+| **Infrastructure as Code** | Terraform |
+| **Configuration Management** | Ansible |
+| **Cloud Provider** | AWS (VPC, EC2, EKS, IAM, Subnets, etc.) |
+| **Monitoring (optional)** | Prometheus, Grafana |
+
+---
+
+## 📁 Project Structure
 
 starbucks/
+│
 ├── ansible/
-│ ├── inventory.ini
-│ └── playbook.yml
+│ ├── inventory.ini # Jenkins server IP
+│ └── playbook.yml # Installs Jenkins, Docker, and dependencies
+│
 ├── infra/
-│ └── main.tf
+│ └── main.tf # Terraform code for creating VPC, EKS, subnets, etc.
+│
 ├── k8s/
-│ ├── deployment.yaml
-│ └── service.yaml
-├── Jenkinsfile
-└── src/ (app code, e.g., index.js, package.json)
+│ ├── deployment.yaml # Kubernetes deployment (with IMAGE_PLACEHOLDER)
+│ └── service.yaml # Kubernetes LoadBalancer service
+│
+├── Jenkinsfile # Full CI/CD pipeline configuration
+├── Dockerfile # Defines Node.js app image build
+├── package.json # Node.js dependencies
+├── index.js # Main app source code
+└── README.md # Documentation
+
+yaml
+Copy code
 
 ---
 
-## ⚡ Setup Instructions
+## 🧩 CI/CD Pipeline Stages (Jenkinsfile)
 
-### 1️⃣ Provision Infrastructure
-```bash
-cd infra/
-terraform init
-terraform apply -auto-approve
-```
-2️⃣ Configure Jenkins Server
+| Stage | Description |
+|--------|-------------|
+| **Clean Workspace** | Ensures a clean Jenkins environment |
+| **Git Checkout** | Pulls latest code from GitHub |
+| **SonarQube Analysis** | Runs static code analysis |
+| **Quality Gate** | Checks code quality threshold |
+| **Install NPM Dependencies** | Installs Node.js dependencies |
+| **OWASP Dependency Check** | Scans open-source libraries for vulnerabilities |
+| **Trivy File Scan** | Scans local files for vulnerabilities and secrets |
+| **Build Docker Image** | Builds and tags image with `BUILD_NUMBER` |
+| **Docker Scout Image** | Analyzes Docker image for vulnerabilities |
+| **Push to DockerHub** | Pushes the image to DockerHub registry |
+| **Apply aws-auth** | Grants Jenkins permissions on EKS cluster |
+| **Deploy to EKS** | Deploys latest image on Kubernetes cluster |
 
-cd ansible/
+---
+
+## 🌐 Deployment Flow
+
+1. **Developer makes code changes** → commits & pushes to GitHub.  
+2. **GitHub Webhook triggers Jenkins** pipeline automatically.  
+3. Jenkins runs:
+   - SonarQube analysis
+   - Vulnerability scans (OWASP, Trivy, Docker Scout)
+   - Builds and pushes Docker image to DockerHub
+   - Deploys updated version to AWS EKS  
+4. **Kubernetes** pulls the latest Docker image and updates pods automatically.  
+5. The **LoadBalancer service** exposes the app publicly.
+
+---
+
+## 🧰 Infrastructure Setup (Terraform)
+
+1. Create all infrastructure:
+   ```bash
+   cd infra
+   terraform init
+   terraform apply
+Terraform provisions:
+
+VPC, subnets, Internet Gateway
+
+NAT Gateway
+
+Security groups
+
+EKS cluster
+
+Node groups
+
+Verify cluster:
+
+bash
+Copy code
+aws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
+kubectl get nodes
+⚙️ Jenkins Setup (via Ansible)
+Run Ansible playbook:
+
+bash
+Copy code
+cd ansible
 ansible-playbook -i inventory.ini playbook.yml
-3️⃣ Run Jenkins Pipeline
-Access Jenkins → Create Pipeline job
+Installs:
 
-Use project Jenkinsfile
+Jenkins
 
-Trigger build manually or via GitHub webhook
+Docker
 
-4️⃣ Verify Deployment
-kubectl get pods
-kubectl get svc
-Copy EXTERNAL-IP of starbucks-service
+AWS CLI
 
-Open in browser → App is live 🎉
+Kubectl
 
-🧹 Teardown (Avoid AWS Costs)
-When done, destroy resources:
+Terraform
 
+Sonar Scanner
 
-cd infra/
-terraform destroy -auto-approve
-Also manually check & delete:
+Configure credentials:
 
-Load Balancers (ELB/ALB)
+GitHub (github-creds)
 
-NAT Gateways
+DockerHub (docker)
+
+AWS (aws-cred)
+
+SonarQube Token (Sonar-token)
+
+🐳 Kubernetes Deployment
+Deployment file (k8s/deployment.yaml):
+
+yaml
+Copy code
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: starbucks-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: starbucks
+  template:
+    metadata:
+      labels:
+        app: starbucks
+    spec:
+      containers:
+        - name: starbucks
+          image: IMAGE_PLACEHOLDER
+          ports:
+            - containerPort: 3000
+Jenkins replaces the image dynamically:
+
+bash
+Copy code
+sed "s|IMAGE_PLACEHOLDER|sachinpatkari/starbucks:${BUILD_NUMBER}|g" k8s/deployment.yaml > k8s/deployment-final.yaml
+kubectl apply -f k8s/deployment-final.yaml
+💻 Running the Project Again
+If you’ve destroyed the infra:
+
+bash
+Copy code
+cd infra
+terraform apply          # Recreate infrastructure
+cd ../ansible
+ansible-playbook -i inventory.ini playbook.yml   # Reinstall Jenkins
+Then just:
+
+Trigger your Jenkins pipeline (or push to GitHub).
+
+Jenkins automatically builds, scans, pushes, and deploys.
+
+💰 Cost Management (Important)
+To avoid AWS billing:
+
+Delete resources after use:
+
+bash
+Copy code
+terraform destroy
+If errors occur, manually delete:
+
+Load balancers
+
+NAT gateways
 
 Elastic IPs
 
-Orphans ENIs
+Network interfaces
 
-✅ Features
-Automated CI/CD pipeline
+Subnets
 
-Static code analysis with SonarQube
+Internet Gateway
 
-Dependency & vulnerability scans (OWASP, Trivy, Docker Scout)
+Finally → VPC
 
-Containerized deployment with Docker
+📸 Screenshots (optional)
+You can include:
 
-Infrastructure-as-Code with Terraform
+Jenkins pipeline stages
 
-Config management with Ansible
+SonarQube dashboard
 
-Kubernetes-based deployment (EKS)
+DockerHub image
+
+AWS EKS pods (kubectl get pods)
+
+Live application URL
+
+🏁 Conclusion
+This project demonstrates end-to-end DevOps automation:
+
+Infrastructure as Code (Terraform)
+
+Configuration Management (Ansible)
+
+Continuous Integration (Jenkins)
+
+Continuous Deployment (EKS + Docker)
+
+Security & Quality Gates (SonarQube, Trivy, OWASP)
+
+It represents a production-grade CI/CD pipeline used in real organizations.
+
+👤 Author
+Sachin Patkari
+💼 DevOps Engineer | Cloud Enthusiast | AWS | Jenkins | Docker | Kubernetes
