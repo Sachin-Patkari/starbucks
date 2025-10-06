@@ -40,6 +40,7 @@ This project showcases a **fully automated CI/CD DevOps pipeline** that takes co
 ---
 
 ## 🏗 Architecture
+```bash
 
 ┌────────────────────────────┐
 │ Developer │
@@ -70,12 +71,12 @@ This project showcases a **fully automated CI/CD DevOps pipeline** that takes co
 ▼
 🌐 End Users
 
-yaml
-Copy code
-
+```
 ---
 
 ## 📁 Project Structure
+
+```bash
 
 starbucks/
 ├── ansible/
@@ -95,6 +96,7 @@ starbucks/
 ├── index.js # Application entry point
 └── README.md # Project documentation
 ---
+```
 
 ## 🚀 Setup Guide
 
@@ -200,7 +202,7 @@ Inspect events:
 kubectl describe svc starbucks-service
 ```
 
-###💰 Cost Management
+### 💰 Cost Management
 
 To avoid AWS charges:
 ```bash
@@ -220,7 +222,7 @@ VPC
 
 ```
 
-###💡 Cost Saving Tips
+### 💡 Cost Saving Tips
 ```bash
 
 Use small EC2 instances like t3.medium
