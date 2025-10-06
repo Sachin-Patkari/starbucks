@@ -1,6 +1,6 @@
 # ☕ Starbucks – Automated CI/CD Pipeline on AWS EKS
 
-A **production-grade Node.js web application** demonstrating complete **DevOps automation** using **Jenkins CI/CD**, **Docker**, **Kubernetes (EKS)**, **Terraform**, and **Ansible** — deployed entirely on **AWS Cloud**.
+A **production-grade Node.js web application** demonstrating **complete DevOps automation** using **Jenkins CI/CD**, **Docker**, **Kubernetes (EKS)**, **Terraform**, and **Ansible** — deployed entirely on **AWS Cloud**.
 
 ---
 
@@ -27,14 +27,15 @@ A **production-grade Node.js web application** demonstrating complete **DevOps a
 
 This project showcases a **fully automated CI/CD DevOps pipeline** that takes code from development to production on **AWS EKS**.
 
-### 🔑 Highlights:
+### 🔑 Highlights
+
 - **Infrastructure as Code (IaC)** – Managed by Terraform  
 - **Configuration Management** – Automated using Ansible  
 - **CI/CD Automation** – Jenkins pipeline triggered via GitHub webhook  
 - **Containerization** – Using Docker  
 - **Orchestration** – On Kubernetes (EKS)  
-- **Security Scanning** – Multi-stage scanning with SonarQube, OWASP, Trivy, Docker Scout  
-- **Continuous Delivery** – Auto-deployment on successful pipeline execution  
+- **Security Scanning** – Multi-stage scanning with SonarQube, OWASP, Trivy, and Docker Scout  
+- **Continuous Delivery** – Automatic deployment on successful builds  
 
 ---
 
@@ -57,20 +58,17 @@ This project showcases a **fully automated CI/CD DevOps pipeline** that takes co
 ▼
 ┌────────────────────────────┐
 │ DockerHub │
-│ (Image Registry Storage) │
+│ (Container Image Registry) │
 └──────────────┬─────────────┘
 │
 ▼
 ┌────────────────────────────┐
 │ AWS EKS Cluster │
 │ - Pods & Services │
-│ - Load Balancer Access │
+│ - LoadBalancer Access │
 └──────────────┬─────────────┘
 ▼
 🌐 End Users
-
-markdown
-Copy code
 
 ---
 
@@ -86,7 +84,7 @@ Copy code
 - **Version Control:** Git, GitHub  
 - **Container Platform:** Docker  
 - **Registry:** DockerHub  
-- **Orchestration:** Kubernetes (EKS)
+- **Orchestration:** Kubernetes (EKS)  
 
 ### 🔒 Security & Quality
 - **Code Quality:** SonarQube  
@@ -148,14 +146,13 @@ starbucks/
 ├── index.js # Application entry point
 └── README.md # Project documentation
 
-yaml
-Copy code
 
 ---
 
 ## 🚀 Setup Guide
 
 ### 1️⃣ Infrastructure Setup (Terraform)
+
 ```bash
 cd infra
 terraform init
@@ -171,13 +168,9 @@ EKS Cluster and Node Groups
 
 Verify setup:
 
-bash
-Copy code
 aws eks update-kubeconfig --region ap-south-1 --name starbucks-eks
 kubectl get nodes
 2️⃣ Jenkins Configuration (Ansible)
-bash
-Copy code
 cd ../ansible
 ansible-playbook -i inventory.ini playbook.yml
 This installs:
@@ -186,17 +179,14 @@ Jenkins, Docker, Terraform, Kubectl, AWS CLI
 
 Sonar Scanner, OWASP Dependency Check
 
-Access Jenkins:
+Access Jenkins at:
 
-bash
-Copy code
 http://<JENKINS_PUBLIC_IP>:8080
 3️⃣ Configure Jenkins Credentials
 Go to:
-
 Manage Jenkins → Credentials → Global Credentials
 
-Add:
+Add the following:
 
 ID	Type	Description
 github-creds	Username/Password	GitHub Access
@@ -222,28 +212,22 @@ Deploy to EKS	Rollout deployment	Kubernetes
 🚢 Deployment
 Rolling Update Strategy:
 
-yaml
-Copy code
 replicas: 2
 strategy:
   type: RollingUpdate
   rollingUpdate:
     maxSurge: 1
     maxUnavailable: 0
-Access Application:
-bash
-Copy code
-kubectl get svc starbucks-service
-Output example:
+Access the application:
 
-arduino
-Copy code
+kubectl get svc starbucks-service
+Example Output:
+
 EXTERNAL-IP: a1234b5678.elb.ap-south-1.amazonaws.com
 🌐 Visit → http://<EXTERNAL-IP>:3000
 
 🔒 Monitoring & Security
-Implemented Layers:
-
+Implemented Layers
 Code: SonarQube
 
 Dependencies: OWASP
@@ -256,24 +240,13 @@ Network: AWS Security Groups
 
 Access: IAM & RBAC
 
-Optional Monitoring:
-
-bash
-Copy code
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm install prometheus prometheus-community/kube-prometheus-stack
-kubectl port-forward svc/prometheus-grafana 3000:80
-Access Grafana → http://localhost:3000
-
 🧰 Troubleshooting
 🧩 EKS Nodes Not Joining
-bash
-Copy code
+
 kubectl get nodes
 kubectl get configmap aws-auth -n kube-system -o yaml
 🐳 Docker Image Pull Error
-bash
-Copy code
+
 docker pull sachinpatkari/starbucks:<BUILD_NUMBER>
 kubectl describe pod <pod-name>
 🕸 LoadBalancer Pending
@@ -283,33 +256,32 @@ Verify Security Groups
 
 Inspect events:
 
-bash
-Copy code
 kubectl describe svc starbucks-service
 💰 Cost Management
 To avoid AWS charges:
 
-bash
-Copy code
 cd infra
 terraform destroy -auto-approve
-If destroy fails:
+If destroy fails, delete resources manually in this order:
 
-Delete Load Balancer
+Load Balancer
 
-Delete NAT Gateway & Elastic IP
+NAT Gateway & Elastic IP
 
-Delete ENIs
+ENIs (Network Interfaces)
 
-Delete EKS Cluster
+EKS Cluster
 
-Delete VPC
+VPC
 
-💡 Tip:
-Use small EC2 types like t3.medium and enable auto-scaling.
+💡 Cost Saving Tips
+Use small EC2 instances like t3.medium
 
-Estimated Monthly Cost (if running 24x7):
+Enable auto-scaling
 
+Shut down resources after testing
+
+Estimated Monthly Cost (24x7)
 Resource	Approx. Cost
 EKS Control Plane	$72
 2x Worker Nodes	$60
@@ -319,9 +291,8 @@ Total	~$180/month
 
 🤝 Contributing
 Contributions are welcome!
+To contribute:
 
-bash
-Copy code
 git checkout -b feature/AmazingFeature
 git commit -m "Add new feature"
 git push origin feature/AmazingFeature
@@ -347,14 +318,5 @@ Terraform Guides
 
 OWASP & Trivy
 
-⭐ If you found this project helpful...
-Give it a ⭐ on GitHub — it helps others discover it too!
-
+⭐ If you found this project helpful, please give it a star!
 🧡 Made with love by Sachin Patkari
-
-yaml
-Copy code
-
----
-
-Would you like me to add **GitHub badges** (like “Built with Jenkins”, “Terraform IaC”, “AWS Certified”) at the top to make it look like a professional open-source project?
