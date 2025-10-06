@@ -1,10 +1,12 @@
 ☕ Starbucks - Automated CI/CD Pipeline on AWS EKS
-Show Image
-Show Image
-Show Image
-Show Image
-Show Image
+#Show Image
+#Show Image
+#Show Image
+#Show Image
+#Show Image
+
 A production-grade Node.js web application demonstrating complete DevOps automation with Jenkins CI/CD, Docker containerization, Kubernetes orchestration on AWS EKS, and infrastructure provisioned via Terraform and Ansible.
+
 📋 Table of Contents
 
 Overview
@@ -15,9 +17,9 @@ Prerequisites
 Project Structure
 Setup Guide
 
-Infrastructure Provisioning
-Jenkins Configuration
-Pipeline Setup
+1. Infrastructure Provisioning
+2. Jenkins Configuration
+3. Pipeline Setup
 
 
 CI/CD Pipeline
@@ -360,13 +362,10 @@ kubectl describe svc starbucks-service
 💰 Cost Management
 AWS Cost Optimization
 Important: Running this project incurs AWS costs. Follow these practices:
-
-Delete resources when not in use:
-
+1. Delete resources when not in use:
 bashcd infra
 terraform destroy -auto-approve
-
-If terraform destroy fails, manually delete:
+2. If terraform destroy fails, manually delete:
 
 Load Balancers (EC2 Console)
 NAT Gateways (VPC Console)
@@ -375,15 +374,12 @@ Network Interfaces (EC2 Console)
 EKS Cluster (EKS Console)
 Then run terraform destroy again
 
-
-Cost-saving tips:
+3. Cost-saving tips:
 
 Use t3.medium instances for worker nodes
 Configure auto-scaling to scale down during off-hours
 Use spot instances for non-production
 Set up AWS Budget alerts
-
-
 
 Estimated Monthly Cost (if running 24/7):
 
@@ -437,6 +433,6 @@ Application Running
 Show Image
 
 <div align="center">
-⭐ Star this repo if you find it helpful!
+⭐ If you find this project helpful, please consider giving it a star!
 Made by Sachin Patkari
 </div>
